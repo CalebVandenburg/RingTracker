@@ -31,7 +31,7 @@
         };
         fetch("http://127.0.0.1:8000/api/rings", requestOptions)
         .then(response => response.json())
-        .then(data => console.log(data));
+        .then(data => this.$emit('get-search-results', data));
       },
     },
   }

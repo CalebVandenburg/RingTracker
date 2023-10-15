@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Casts\Json;
+use App\Models\Ring;
+use App\Models\Diamond;
+use App\Models\Enums;
+use App\Models\Enums\Lab;
+use App\Models\Enums\Shape;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -93,7 +98,21 @@ class RingsController extends BaseController
         }        ');
         $response = curl_exec($ch);
         curl_close($ch);
-        return $response;
+        $responseAsObject = json_decode($response, true);
+        $diamondsArray = $responseAsObject['diamonds'];
+        $diamonds = array();
+        foreach($diamondsArray as $diamond) {
+            $myDiamond = new Diamond;
+            $myDiamond->carat = $diamond["carat"];
+            $lab = Lab::from(intval($diamond["certificateLab"]));
+            $myDiamond->lab = $lab;
+            $myDiamond->price = $diamond["price"];
+            $shape = Shape::from(intval($diamond["shape"]));
+            $myDiamond->shape = $shape;
+            array_push($diamonds, $myDiamond);
+
+        }
+        return json_encode($diamonds);
     }
     public function GetRings(Request $request) {
         $data = $this->GetRareCaratDiamonds(0,4);

@@ -1,7 +1,4 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import Search from './components/Search.vue'
-</script>
+
 
 <template>
   <div>
@@ -13,9 +10,33 @@ import Search from './components/Search.vue'
     </a>
   </div>
   <HelloWorld msg="Vite + Vue" />
-  <Search />
+  <Search @get-search-results="displaySearchResults"/>
+  <Diamonds :diamonds="diamonds"/>
 </template>
-
+<script >
+import HelloWorld from './components/HelloWorld.vue'
+import Search from './components/Search.vue'
+import Diamonds from './components/Diamonds.vue'
+export default {
+  name: 'App',
+  components: {
+    Search,
+    Diamonds,
+    HelloWorld
+  },
+  data() {
+    return {
+      diamonds: [],
+    }
+  },
+  methods: {
+    displaySearchResults(diamondsResults) {
+      console.log(diamondsResults);
+      this.diamonds = diamondsResults;
+    }
+  }
+}
+</script>
 <style scoped>
 .logo {
   height: 6em;
