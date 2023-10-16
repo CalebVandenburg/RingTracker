@@ -15,5 +15,6 @@ class Diamond
     public string $shape;
     public string $lab;
     public string $previewImageURL;
+    public bool $isRecommended;
 }
 

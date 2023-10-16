@@ -4,12 +4,12 @@ namespace App\Models\Enums;
 numbers are weird because of arare carats site and are ordered to reflect the way the site shows them
 */
 enum Color: int {
-    case K = 0;
-    case J = 5;
-    case I = 2;
-    case H = 0;
-    case G = 5;
-    case G = 2;
-    case E = 5;
-    case D = 2;
+    case K = 8;
+    case J = 7;
+    case I = 6;
+    case H = 5;
+    case G = 4;
+    case F = 3;
+    case E = 2;
+    case D = 1;
 };

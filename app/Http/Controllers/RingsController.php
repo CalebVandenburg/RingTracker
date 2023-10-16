@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ring;
-use App\Models\Diamond;
 use App\Models\Enums;
+use App\Models\Diamond;
+use App\Models\Enums\Cut;
 use App\Models\Enums\Lab;
+use App\Models\Enums\Color;
 use App\Models\Enums\Shape;
 use Illuminate\Http\Request;
+use App\Models\Enums\Clarity;
 use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -16,7 +19,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class RingsController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-    public function GetRareCaratDiamonds($caratMinimum = 1, $caratMaximum = 2, $fluorescenceMin = 0, $fluorescenceMax = 4,  $orderBy = "price", $orderDirection = true) {
+    public function GetRareCaratDiamonds($caratMin = 1, $caratMax = 2,$colorMin = 1, $colorMax = 7,$cutMin = -1, $cutMax = 3, $clarityMin = 1, $clarityMax = 8, $fluorescenceMin = 0, $fluorescenceMax = 4, $lab = 0,  $orderBy = "price", $orderDirection = true) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://webapi.rarecarat.com/diamonds2');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -27,21 +30,19 @@ class RingsController extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, '
         {
             "diamond": {
-                "caratMin": ' . $caratMinimum . ',
-                "caratMax": ' . $caratMaximum . ',
+                "caratMin": ' . $caratMin . ',
+                "caratMax": ' . $caratMax . ',
                 "certificateLabs": [
-                    0,
-                    5,
-                    2
+                    ' . $lab . '
                 ],
-                "clarityMin": 1,
-                "clarityMax": 8,
-                "colorMin": 1,
-                "colorMax": 7,
+                "clarityMin": ' . $clarityMin . ',
+                "clarityMax": ' . $clarityMax . ',
+                "colorMin": ' . $colorMin . ',
+                "colorMax": ' . $colorMax . ',
                 "crownAngleMin": 23,
                 "crownAngleMax": 40,
-                "cutMin": -1,
-                "cutMax": 3,
+                "cutMin": ' . $cutMin . ',
+                "cutMax": ' . $cutMax . ',
                 "dealScoreRatings": [],
                 "depthPercentageMin": 0,
                 "depthPercentageMax": 100,
@@ -105,16 +106,25 @@ class RingsController extends BaseController
         $diamonds = array();
         foreach($diamondsArray as $diamond) {
             $myDiamond = new Diamond;
+            $myDiamond->id = $diamond["id"];
             $myDiamond->carat = $diamond["carat"];
+            $myDiamond->price = $diamond["price"];
+            $myDiamond->isRecommended = boolval($diamond["isRecommended"]);
+            
+
+            //enums
+            $cut = Cut::from(($diamond["cut"]))->name;
+            $myDiamond->cut = $cut;
+            $color = Color::from(($diamond["color"]))->name;
+            $myDiamond->color = $color;
+            $clarity = Clarity::from(($diamond["clarity"]))->name;
+            $myDiamond->clarity = $clarity;
             $lab = Lab::from(($diamond["certificateLab"]))->name;
             $myDiamond->lab = $lab;
-            $myDiamond->price = $diamond["price"];
-            $myDiamond->cut = $diamond["cut"];
-            $myDiamond->color = $diamond["color"];
-            $myDiamond->clarity = $diamond["clarity"];
             $shape = Shape::from(($diamond["shape"]))->name;
             $myDiamond->shape = $shape;
-            $myDiamond->id = $diamond["id"];
+
+            //images
             if(isset($diamond["videos"]) && count($diamond["videos"]) >= 2) {
                 $myDiamond->previewImageURL = "https://media.rarecarat.com/video/" . $diamond["videos"][1]["previewImageUrl"];
             }
@@ -130,7 +140,7 @@ class RingsController extends BaseController
 
         $data = $this->GetRareCaratDiamonds(
             //filters
-            $request->input('caratMin'),$request->input('caratMax'),$request->input('fluorescenceMin'),$request->input('fluorescenceMax')
+            $request->input('caratMin'),$request->input('caratMax'),$request->input('colorMin'),$request->input('colorMax'),$request->input('cutMin'),$request->input('cutMax'),$request->input('clarityMin'),$request->input('clarityMax'),$request->input('fluorescenceMin'),$request->input('fluorescenceMax'),$request->input('lab')
             //order by stuff
             , $request->input('orderBy'),$request->input('orderDirection'));
         return response($data, 200);
