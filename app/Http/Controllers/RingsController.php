@@ -16,7 +16,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class RingsController extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
-    public function GetRareCaratDiamonds($caratMinimum = 0, $caratMaximum = 5) {
+    public function GetRareCaratDiamonds($caratMinimum = 1, $caratMaximum = 2, $fluorescenceMin = 0, $fluorescenceMax = 4,  $orderBy = "price", $orderDirection = true) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://webapi.rarecarat.com/diamonds2');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -45,8 +45,8 @@ class RingsController extends BaseController
                 "dealScoreRatings": [],
                 "depthPercentageMin": 0,
                 "depthPercentageMax": 100,
-                "fluorescenceMin": 0,
-                "fluorescenceMax": 4,
+                "fluorescenceMin": ' . $fluorescenceMin . ',
+                "fluorescenceMax": ' . $fluorescenceMax . ',
                 "girdleThicknessPercentageMin": 1.5,
                 "girdleThicknessPercentageMax": 7,
                 "girdleThicknessMin": 1,
@@ -80,6 +80,8 @@ class RingsController extends BaseController
                 "widthMin": 3,
                 "widthMax": 20
             },
+            "orderBy" : "' . $orderBy . '",
+            "orderDirection" : ' . $orderDirection . ',
             "retailer": {
                 "distance": 75,
                 "postalCode": null,
@@ -107,6 +109,9 @@ class RingsController extends BaseController
             $lab = Lab::from(($diamond["certificateLab"]))->name;
             $myDiamond->lab = $lab;
             $myDiamond->price = $diamond["price"];
+            $myDiamond->cut = $diamond["cut"];
+            $myDiamond->color = $diamond["color"];
+            $myDiamond->clarity = $diamond["clarity"];
             $shape = Shape::from(($diamond["shape"]))->name;
             $myDiamond->shape = $shape;
             $myDiamond->id = $diamond["id"];
@@ -123,7 +128,11 @@ class RingsController extends BaseController
     }
     public function GetRings(Request $request) {
 
-        $data = $this->GetRareCaratDiamonds($request->input('caratMin'),$request->input('caratMax'));
+        $data = $this->GetRareCaratDiamonds(
+            //filters
+            $request->input('caratMin'),$request->input('caratMax'),$request->input('fluorescenceMin'),$request->input('fluorescenceMax')
+            //order by stuff
+            , $request->input('orderBy'),$request->input('orderDirection'));
         return response($data, 200);
     }
 }
