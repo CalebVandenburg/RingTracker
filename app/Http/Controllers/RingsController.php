@@ -27,8 +27,8 @@ class RingsController extends BaseController
         curl_setopt($ch, CURLOPT_POSTFIELDS, '
         {
             "diamond": {
-                "caratMin": 0.28,
-                "caratMax": 35,
+                "caratMin": ' . $caratMinimum . ',
+                "caratMax": ' . $caratMaximum . ',
                 "certificateLabs": [
                     0,
                     5,
@@ -76,7 +76,7 @@ class RingsController extends BaseController
                 "symmetryMax": 3,
                 "tableWidthPercentageMin": 0,
                 "tableWidthPercentageMax": 100,
-                "isLabGrown": true,
+                "isLabGrown": false,
                 "widthMin": 3,
                 "widthMax": 20
             },
@@ -104,18 +104,26 @@ class RingsController extends BaseController
         foreach($diamondsArray as $diamond) {
             $myDiamond = new Diamond;
             $myDiamond->carat = $diamond["carat"];
-            $lab = Lab::from(intval($diamond["certificateLab"]));
+            $lab = Lab::from(($diamond["certificateLab"]))->name;
             $myDiamond->lab = $lab;
             $myDiamond->price = $diamond["price"];
-            $shape = Shape::from(intval($diamond["shape"]));
+            $shape = Shape::from(($diamond["shape"]))->name;
             $myDiamond->shape = $shape;
+            $myDiamond->id = $diamond["id"];
+            if(isset($diamond["videos"]) && count($diamond["videos"]) >= 2) {
+                $myDiamond->previewImageURL = "https://media.rarecarat.com/video/" . $diamond["videos"][1]["previewImageUrl"];
+            }
+            else {
+                $myDiamond->previewImageURL = "https://www.freeiconspng.com/thumbs/no-image-icon/no-image-icon-15.png";
+            }
             array_push($diamonds, $myDiamond);
 
         }
         return json_encode($diamonds);
     }
     public function GetRings(Request $request) {
-        $data = $this->GetRareCaratDiamonds(0,4);
+
+        $data = $this->GetRareCaratDiamonds($request->input('caratMin'),$request->input('caratMax'));
         return response($data, 200);
     }
 }

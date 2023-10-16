@@ -1,7 +1,11 @@
 <template>
   <form @submit="onSubmit">
-    <label for="carat"></label>
-    <input name="carat">
+    <label for="caratMin">Carat Minimum: </label>
+    <input name="caratMin">
+    <br/>
+    <label for="caratMax">Carat Maximum: </label>
+    <input name="caratMax">
+    <br/>
     <button type="submit">Submit</button>
   </form>
 </template>

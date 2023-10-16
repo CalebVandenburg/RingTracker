@@ -1,6 +1,9 @@
 <template>
-    <div class="diamondsContainer" v-for="diamond in diamonds">
-        <Diamond :diamond=diamond />
+    <div class="diamondsContainer">
+
+        <div class="diamond" v-for="diamond in diamonds">
+            <Diamond :diamond=diamond />
+        </div>
     </div>
   </template>
   <script>

@@ -1,11 +1,8 @@
 <template>
-    <div class="diamond">
-
-        <h3>{{ diamond.carat }}</h3>
-        <p>{{ diamond.price }}</p>
+        <img :src="diamond.previewImageURL"/>
+        <p><a target="_blank" :href="'https://www.rarecarat.com/diamond/' + diamond.id">{{ diamond.carat }} - ${{ diamond.price }}</a></p>
         <p >{{ diamond.shape }}</p>
         <p >{{ diamond.lab }}</p>
-    </div>
 </template>
 
 <script>

@@ -6,9 +6,11 @@ use App\Models\Enums;
 
 class Diamond
 {
+    public int $id;
     public float $carat;
     public float $price;
-    public Enums\Shape $shape;
-    public Enums\Lab $lab;
+    public string $shape;
+    public string $lab;
+    public string $previewImageURL;
 }
 
