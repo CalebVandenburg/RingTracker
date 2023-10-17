@@ -1,47 +1,21 @@
 
 
 <template>
-  <div>
-    <h1>Cross Directory Diamond Finder</h1>
-  </div>
-  <Search @get-search-results="displaySearchResults"/>
-  <Diamonds :diamonds="diamonds"/>
+  <Navigation />
+  <router-view></router-view>
 </template>
 <script >
-import HelloWorld from './components/HelloWorld.vue'
-import Search from './components/Search.vue'
-import Diamonds from './components/Diamonds.vue'
+import Home from './views/Home.vue'
+import About from './views/About.vue'
+import Navigation from './components/Navigation.vue'
 export default {
   name: 'App',
   components: {
-    Search,
-    Diamonds,
-    HelloWorld
-  },
-  data() {
-    return {
-      diamonds: [],
-    }
-  },
-  methods: {
-    displaySearchResults(diamondsResults) {
-      console.log(diamondsResults);
-      this.diamonds = diamondsResults;
-    }
+    Navigation,
+    About,
+    Home
   }
 }
 </script>
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 </style>

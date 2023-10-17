@@ -6,8 +6,12 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@vue/cli-plugin-router": "~5.0.0",
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.8.0",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "vue-router": "^4.0.13"
     }
 }

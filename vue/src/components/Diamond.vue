@@ -3,7 +3,6 @@
         <h3><a target="_blank" :href="'https://www.rarecarat.com/diamond/' + diamond.id">{{ diamond.carat }} Carats - ${{ diamond.price }}</a></h3>
         <h4 v-if="diamond.isRecommended">Recommended</h4>
         <ul>
-            <li>{{ diamond.isRecommended }}</li>
             <li>Shape: {{ diamond.shape }}</li>
             <li>Lab: {{ diamond.lab }}</li>
             <li>Color: {{ diamond.color }}</li>
